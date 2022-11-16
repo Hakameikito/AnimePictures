@@ -37,20 +37,16 @@ def get_rndm_img_page(res_x: int = 1920, res_y: int = 1080):
 def get_image(link: str):
     content = requests.get(link).content
     soup = BeautifulSoup(content, "lxml")
-    pictures = soup.find_all("picture")
-    pic_link = pictures[-1].img.get("src")                   # //cdn.anime-pictures.net/previews/1c7/1c758f126d84b8b7991eb3d62db8ea8f_bp.jpg
-    print(pic_link) # TODO: fix the bug with wrong extension when more than 1 img on the page
-    pic_link = pic_link[pic_link.find("previews/") + 8::]   # /1c7/1c758f126d84b8b7991eb3d62db8ea8f_bp.jpg
-    extension = pic_link[pic_link.find(".")::]              # get file extension, i.e. jpg/png
-    pic_link = pic_link[:pic_link.find("_")]                # /1c7/1c758f126d84b8b7991eb3d62db8ea8f
-    final_link = f"https://images.anime-pictures.net{pic_link}{extension}"
-    print(final_link)
-    print(extension)
+    pictures = soup.find_all("a")
+    for ele in pictures:
+        img_link = ele.get("href")
+        if "get_image" in img_link:
+            return f"https://anime-pictures.net{img_link}"
 
 
 link = get_rndm_img_page(1920, 1080)
 print(link)
-get_image(link)
+print(get_image(link))
 
 
 # test_img = "https://images.anime-pictures.net/686/6860ac3e69d773d950679c3e473575d2.png?if=ANIME-PICTURES.NET_-_777379-1883x4500-re%3Azero+kara+hajimeru+isekai+seikatsu-white+fox-echidna+%28re%3Azero%29-jun+%28aousa0328%29-single-long+hair.png"
